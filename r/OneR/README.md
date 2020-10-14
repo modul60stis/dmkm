@@ -127,14 +127,15 @@ summary(model.OneR)
     ## Pearson's Chi-squared test:
     ## X-squared = 3.6, df = 2, p-value = 0.1653
 
-### OneR Model
+### OneR Model Plot
 
 ``` r
 plot(model.OneR)
 ```
 
-![](One-R_files/figure-markdown_github/unnamed-chunk-8-1.png) \#\#\#
-Model Evaluation
+![](One-R_files/figure-markdown_github/unnamed-chunk-8-1.png) 
+
+### Model Evaluation
 
 ``` r
 pc <- predict(model.OneR, testingdat, type = "class")
