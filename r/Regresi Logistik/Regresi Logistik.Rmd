@@ -5,62 +5,79 @@ date: "10/11/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+### Load Library
+Dua library yang dibutuhkan, yaitu **psych, dan caret**. Jika belum terinstall, silahkan install terlebih dahulu dengan perintah `install.packages("nama-package")`.
+
+Library **psych** akan digunakan untuk melihat korelasi antar variabel dan library **caret** digunakan untuk membuat confusion matriks dan melihar akurasi model.
+
+```{r message=FALSE, warning=FALSE}
+library(psych)
+library(caret)
 ```
 
+### Baca Data
+Data tersimpan di folder `dataset`
 ```{r}
-#load library (install dahulu jika belum diinstall)
-
-library(psych)#melihat korelasi antar variabel
-library(caret)# membangun confusion matriks, melihat akurasi model
-
-# load data, path menyesuaikan
 ipeh<- read.csv("../dataset/data_Ipeh.csv", header=T)
-View(ipeh)
-
+head(ipeh)
 ```
 
+### Konversi Data
+Mengubah variabel **admit** dan **rank** menjadi bertipe factor
 ```{r}
-# melihat struktur data
+ipeh$admit  <- as.factor(ipeh$admit)
+ipeh$rank <- as.factor(ipeh$rank)
 str(ipeh)
-
-#mengubah variabel admit dn rank menjadi bertipe factor
-ipeh$admit=as.factor(ipeh$admit)
-ipeh$rank=as.factor(ipeh$rank)
-
-pairs.panels(ipeh)
-#terlihat korelasi antara variabel tidak terlalu signifikan, kita misalkan tidak ada multikolinear. pada kasus asli harap diuji dengan uji multikolinearitas
 ```
 
+### Pair Plot
+
 ```{r}
-# memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
+pairs.panels(ipeh)
+```
+
+Terlihat korelasi antara variabel tidak terlalu signifikan, kita misalkan tidak ada multikolinear. Pada kasus asli harap diuji dengan uji multikolinearitas
+
+
+### Split Data
+Memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
+```{r}
 set.seed(1234)
-sampel<-sample(2,nrow(ipeh),replace = T, prob = c(0.8,0.2))
+sampel <- sample(2, nrow(ipeh), replace = T, prob = c(0.8,0.2))
+trainingdat <- ipeh[sampel==1, ]
+testingdat <- ipeh[sampel==2, ]
+print(paste("Jumlah Train Data: ", nrow(trainingdat), "| Jumlah Test Data: ", nrow(testingdat)))
+```
 
-trainingdat<-ipeh[sampel==1, ]
-testingdat<-ipeh[sampel==2, ]
-
-
-#model
+### Buat Model
+Karena kasus ini hanya admit atau tidak admit, maka model yang dibangun adalah model regresi logistik sederhana. Jika target class memiliki banyak nilai, gunakan multinomial.
+```{r}
 modellogreg<-glm(admit~., data=trainingdat, family = "binomial")
-#karena kasus ini hanya admit atau tidak admit, maka model yang dibangun adalah model regresi logistik sederhana.
-#jika target class memiliki banyak nilai, gunakan multinomial
 summary(modellogreg)
+```
 
-#koefisien model
+#### Koefisien model
+```{r}
 coefficients(modellogreg)
 ```
+
+### Model Evaluation
+#### Melakukan Prediksi
+
 ```{r}
-#prediksi
-
-prediksilogreg<-predict(modellogreg, testingdat, type="response")#output berupa peluang
+prediksilogreg <- predict(modellogreg, testingdat, type="response") #output berupa peluang
 prediksilogreg
+```
 
-pred<-ifelse(prediksilogreg>0.5, 1, 0)#menyaring prediksi. lebih besar dari 0.05 dikategorikan 1 (admit)
-#selain itu dikategorikan 0 (tidak diadmit)
+Menyaring prediksi, lebih besar dari 0.05 dikategorikan 1 (admit) selain itu dikategorikan 0 (tidak diadmit)
 
+```{r}
+pred <- ifelse(prediksilogreg>0.5, 1, 0)
+pred
+```
+
+#### Confusion Matrix
+```{r}
 confusionMatrix(table(pred, testingdat$admit))
-
 ```
 
