@@ -5,51 +5,59 @@ date: "10/11/2020"
 output: html_document
 ---
 
-## Load library
+### Load library
+Lima library yang dibutuhkan, yaitu **readxl, dplyr, cluster, factoextra, NbClust**. Jika belum terinstall, silahkan install terlebih dahulu dengan perintah `install.packages("nama-package")`.
+
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
-
-#load library (install dahulu jika belum diinstall)
-
 library(readxl)# import file excel
-library(DT) # data dinamis
-library(dplyr) #menggunakan pipe operator
-library(cluster) #analisis cluster
-library(factoextra) #EDA, untuk membuat distance matriks
-library(NbClust) #menentukan jumlah cluster
+library(dplyr) # menggunakan pipe operator
+library(cluster) # analisis cluster
+library(factoextra) # EDA, untuk membuat distance matriks
+library(NbClust) # menentukan jumlah cluster
 ```
 
-## Load data
+### Baca data
+Data tersimpan di folder `dataset`
 ```{r}
 data <- read_xlsx("../dataset/jabar-2mei.xlsx") %>% 
-        as.data.frame()    # Mengubah ke bentuk dataframe
-
-row.names(data) <- data$regency # Nama kab/kota dijadikan row index
-data <- data[,-1]               # Kemudian kolom nama kab/kota dikeluarkan
-
-datatable(data)                 # Menampilkan data dalam bentuk tabel dinamis
+        as.data.frame()
+head(data)
+```
+### Mengganti Row Names
+Nama kab/kota dijadikan row index. Kemudian kolom nama kab/kota dikeluarkan
+```{r}
+row.names(data) <- data$regency 
+data <- data[,-1]
+head(data)
 ```
 
-## Partitioning clustering
-### K-Means
-### 1) Choose best k cluster
+### Optimal Number of Clusters
 ```{r}
 set.seed(123)
 fviz_nbclust(data, kmeans, method = "gap_stat")
 ```
 
-### 2) Compute k-means clustering
+### Compute k-means clustering
 ```{r}
 km.data <- kmeans(data, 3, nstart = 25)
-data %>% 
-  aggregate(by=list(cluster=km.data$cluster), mean)  # Mendapatkan summary tiap cluster
-```
-```{r}
-data %>% 
-  cbind(cluster = km.data$cluster) %>%  # Melabeli tiap kab/kota dengan klasternya
-  datatable()  # Menampilkan dalam bentuk tabel dinamis
+km.data
 ```
 
-### 3) Visualize: PCA Biplot
+### Mendapatkan Summary Tiap Cluster
+```{r}
+data %>% 
+  aggregate(by=list(cluster=km.data$cluster), mean)
+```
+
+### Melaukan Pelabelan
+Melabeli tiap kab/kota dengan klasternya
+```{r}
+data %>% 
+  cbind(cluster = km.data$cluster) %>%
+  select(cluster)
+```
+
+### Visualize: PCA Biplot
 ```{r}
 fviz_cluster(km.data, data = data,
              ellipse.type = "convex",
