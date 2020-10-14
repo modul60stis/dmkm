@@ -5,62 +5,60 @@ date: "10/11/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
+### Load Library
+Library yang dibutuhkan adalah **oneR**. Silahkan install terlebih dahulu jika belum terisntall, dengan perintah `install.packages("oneR")`
 ```{r}
-#load library (install dahulu jika belum diinstall)
 library(OneR)
-
-#load data
-data<-read.csv("../dataset/beli_komputer.csv", header = T, sep = ";")
 ```
 
+### Baca Data
+Data tersimpan di folder `dataset`
 ```{r}
-# melihat struktur data
-str(data)
+data <- read.csv("../dataset/beli_komputer.csv", header = T, sep = ";")
+data <- data[, 2:6]
+head(data)
+```
 
-#melihat apa terdapat data yang miss
+### Explorasi Data
+#### Melihat struktur data
+```{r}
+str(data)
+```
+
+#### Melihat apa terdapat data yang miss
+```{r}
 colSums(is.na(data))
-
-#mengubah tipe variabel menjadi factor
-
+```
+#### Mengubah tipe variabel menjadi factor
+```{r}
 for(i in names(data[-1])){
-  data[ ,i]=as.factor(data[ ,i])
+  data[ ,i] <- as.factor(data[ ,i])
 }
-str(data)
 summary(data)
-
 ```
 
-n
+### Split Data
+Memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
 ```{r}
-# memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
 set.seed(1234)
-soampel<-sample(2,nrow(data),replace = T, prob = c(0.8,0.2))
-
+sampel<-sample(2,nrow(data),replace = T, prob = c(0.8,0.2))
 trainingdat<-data[sampel==1, ]
 testingdat<-data[sampel==2, ]
-
+print(paste("Jumlah Train Data: ", nrow(trainingdat), "| Jumlah Test Data: ", nrow(testingdat)))
 ```
 
+### Membuat Model
 ```{r}
-#model
-
-#binning variabel numerilk, binning berfungsi untuk mendiskritkan data numerik menjadi kategorik
-train.bin <- optbin(trainingdat)
-
-#membangun model
-model.OneR <- OneR(Buy_Computer~., data = train.bin, verbose = TRUE)
+model.OneR <- OneR(Buy_Computer~., data = trainingdat, verbose = TRUE)
 summary(model.OneR)
+```
+### OneR Model
+```{r}
 plot(model.OneR)
-
-#prediksi
-pc <-NULL
+```
+### Model Evaluation
+```{r}
 pc <- predict(model.OneR, testingdat, type = "class")
 eval_model(pc,testingdat)
-
 ```
 
