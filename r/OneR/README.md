@@ -56,16 +56,18 @@ colSums(is.na(data))
 #### Mengubah tipe variabel menjadi factor
 
 ``` r
-for(i in names(data[-1])){
+for(i in names(data)){
   data[ ,i] <- as.factor(data[ ,i])
 }
-summary(data)
+str(data)
 ```
 
-    ##      age               income  student   credit_rating Buy_Computer
-    ##  Length:14          high  :4   no :7   excellent:6     no :5       
-    ##  Class :character   low   :4   yes:7   fair     :8     yes:9       
-    ##  Mode  :character   medium:6
+    ## 'data.frame':    14 obs. of  5 variables:
+    ##  $ age          : Factor w/ 3 levels "middle_age","senior",..: 3 3 1 2 2 2 1 3 3 2 ...
+    ##  $ income       : Factor w/ 3 levels "high","low","medium": 1 1 1 3 2 2 2 3 2 3 ...
+    ##  $ student      : Factor w/ 2 levels "no","yes": 1 1 1 1 2 2 2 1 2 2 ...
+    ##  $ credit_rating: Factor w/ 2 levels "excellent","fair": 2 1 2 2 2 1 1 2 2 2 ...
+    ##  $ Buy_Computer : Factor w/ 2 levels "no","yes": 1 1 2 2 2 1 2 1 2 2 ...
 
 ### Split Data
 
@@ -127,15 +129,14 @@ summary(model.OneR)
     ## Pearson's Chi-squared test:
     ## X-squared = 3.6, df = 2, p-value = 0.1653
 
-### OneR Model Plot
+### OneR Model
 
 ``` r
 plot(model.OneR)
 ```
 
-![](One-R_files/figure-markdown_github/unnamed-chunk-8-1.png) 
-
-### Model Evaluation
+![](One-R_files/figure-markdown_github/unnamed-chunk-8-1.png) \#\#\#
+Model Evaluation
 
 ``` r
 pc <- predict(model.OneR, testingdat, type = "class")

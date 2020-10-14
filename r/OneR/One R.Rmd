@@ -31,10 +31,10 @@ colSums(is.na(data))
 ```
 #### Mengubah tipe variabel menjadi factor
 ```{r}
-for(i in names(data[-1])){
+for(i in names(data)){
   data[ ,i] <- as.factor(data[ ,i])
 }
-summary(data)
+str(data)
 ```
 
 ### Split Data
