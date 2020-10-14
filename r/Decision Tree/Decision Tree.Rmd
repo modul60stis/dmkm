@@ -1,0 +1,32 @@
+---
+title: "Decision Tree"
+author: "Fikri Septrian Anggara"
+date: "10/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+#load library (install dahulu jika belum diinstall)
+
+library(tidyverse)#pengolahan variabel dan visualisasi data
+
+library(caret)#membangun confusion matriks, melihat akurasi model
+
+#import data, path menyesuaikan
+car <- read.csv("car.txt", header=FALSE)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

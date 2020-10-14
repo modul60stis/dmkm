@@ -1,0 +1,96 @@
+---
+title: "Hierarchical"
+author: "Tim Modul"
+date: "10/11/2020"
+output: html_document
+---
+
+---
+title: "Clustering Methods"
+author: "muqiitsaputra"
+
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load library
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+
+#load library (install dahulu jika belum diinstall)
+
+library(readxl)# import file excel
+library(DT) # data dinamis
+library(dplyr) #menggunakan pipe operator
+library(cluster) #analisis cluster
+library(factoextra) #EDA, untuk membuat distance matriks
+library(NbClust) #menentukan jumlah cluster
+```
+
+## Load data
+```{r}
+data <- read_xlsx("../dataset/jabar-2mei.xlsx") %>% 
+        as.data.frame()    # Mengubah ke bentuk dataframe
+
+row.names(data) <- data$regency # Nama kab/kota dijadikan row index
+data <- data[,-1]               # Kemudian kolom nama kab/kota dikeluarkan
+
+datatable(data)                 # Menampilkan data dalam bentuk tabel dinamis
+```
+
+## Hierarchial clustering
+### Distance metric
+```{r}
+d1 <- get_dist(data, stand = TRUE, method = "euclidean")
+fviz_dist(d1, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
+```
+
+### Linkage method
+```{r}
+# Complete
+data.hcc <- data %>%
+  scale() %>%                     # Standarisasi data
+  dist(method = "euclidean") %>%  # Distance metric
+  hclust(method = "complete")     # Linkage method
+
+# Single
+data.hcs <- data %>%
+  scale() %>%
+  dist(method = "euclidean") %>%
+  hclust(method = "single")
+
+# Ward
+data.hcw <- data %>%
+  scale() %>%
+  dist(method = "euclidean") %>%
+  hclust(method = "ward.D2")
+```
+
+### Visualize: Dendogram
+```{r}
+# Complete
+fviz_dend(data.hcc, k = 4, # Cut in four groups
+          cex = 0.5, # label size
+          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+          color_labels_by_k = TRUE, # color labels by groups
+          rect = TRUE, # Add rectangle around groups
+          main = "Cluster Dendogram (Complete-linkage)")
+
+# Single
+fviz_dend(data.hcs, k = 4, # Cut in four groups
+          cex = 0.5, # label size
+          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+          color_labels_by_k = TRUE, # color labels by groups
+          rect = TRUE, # Add rectangle around groups
+          main = "Cluster Dendogram (Single-linkage)")
+
+# Ward
+fviz_dend(data.hcw, k = 4, # Cut in four groups
+          cex = 0.5, # label size
+          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+          color_labels_by_k = TRUE, # color labels by groups
+          rect = TRUE, # Add rectangle around groups
+          main = "Cluster Dendogram (Ward-linkage)")
+```

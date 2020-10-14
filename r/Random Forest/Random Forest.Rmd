@@ -1,0 +1,99 @@
+---
+title: "Random Forest"
+author: "Tim Modul"
+date: "10/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#load library (install dahulu jika belum diinstall)
+
+library(randomForest)# untuk memodelkan random forestnyah
+library(caret)# buat matriks bingung oawkoawko
+library(psych)# untuk melihat korelasi aku dan dia
+
+# load data, path menyesuaikan
+
+car <- read.csv("../dataset/car.txt", header=FALSE)
+
+```
+
+```{r}
+str(car)
+
+# ubah tipe variabel menjadi tipe faktor
+for(i in names(car)){
+  car[,i]=as.factor(car[,i])
+}
+
+str(car)
+View(car)
+# melihat korelasi dari tiap variabel, kalau ada korelasi yang tinggi, hilangkan salah satu variabel
+pairs.panels(car)
+
+```
+
+```{r}
+# memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
+set.seed(1234)
+sampel<-sample(2,nrow(car),replace = T, prob = c(0.8,0.2))
+
+trainingdat<-car[sampel==1, ]
+testingdat<-car[sampel==2, ]
+
+#model
+set.seed(123)   
+model<-randomForest(V7~., data=trainingdat)
+model
+# banyaknya pohon yang dibuat dari fungsi default adalah 500, jumlah pohon bisa diganti dari atribut ntree
+
+# banyaknya variabel yang digunakan sebagai kandidat setiap percabangan node. pada fungsi default adalah 2, bisa diganti
+# dari atribut mtry. yang mendekati optimal adalah akar dari jumlah atribut.
+
+# OOB merupakan error yang berasal dari prediksi yang salah oleh model, di mana data yang diprediksi adalah
+#data yang tidak dimasukkan ke dalam model saat proses bootstraping
+
+
+```
+```{r}
+# prediksi
+
+prediksiRF<-predict(model,testingdat)
+confusionMatrix(table(prediksiRF, testingdat$V7))
+
+# melihat error rate model dengan banyak tree tertentu.
+plot(model)
+
+#terlihat dari plot bahwa semakin banyak tree yang dibuat, error rate semakin asimptotik dengan nilai error tertentu
+```
+```{r}
+# menyetel tree
+setelan<-tuneRF(trainingdat[,-7],
+                trainingdat[,7], 
+                stepFactor = 0.5, #besarnya peningkatan mtry tiap iterasi
+                plot = TRUE, 
+                ntreeTry = 300, #banyak pohon
+                trace = TRUE,  
+                improve = 0.05)
+
+#terlihat dari plot setelan, OOB terendah berada pada mtry=16.
+```
+```{r}
+# membuat model dengan mtry=16
+
+model16<-randomForest(V7~., data=trainingdat, ntree = 300, mtry = 16, importance = TRUE, proximity = TRUE)
+
+model16
+
+prediksiRF<-predict(model16,testingdat)
+confusionMatrix(table(prediksiRF, testingdat$V7))
+
+# terlihat dari model hasil perubahan mtry, akurasi model meningkat sebanyak 5%
+```
+
+

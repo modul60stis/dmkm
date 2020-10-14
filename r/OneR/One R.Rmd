@@ -1,0 +1,66 @@
+---
+title: "One R"
+author: "Tim Modul"
+date: "10/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#load library (install dahulu jika belum diinstall)
+library(OneR)
+
+#load data
+data<-read.csv("../dataset/beli_komputer.csv", header = T, sep = ";")
+```
+
+```{r}
+# melihat struktur data
+str(data)
+
+#melihat apa terdapat data yang miss
+colSums(is.na(data))
+
+#mengubah tipe variabel menjadi factor
+
+for(i in names(data[-1])){
+  data[ ,i]=as.factor(data[ ,i])
+}
+str(data)
+summary(data)
+
+```
+
+n
+```{r}
+# memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
+set.seed(1234)
+soampel<-sample(2,nrow(data),replace = T, prob = c(0.8,0.2))
+
+trainingdat<-data[sampel==1, ]
+testingdat<-data[sampel==2, ]
+
+```
+
+```{r}
+#model
+
+#binning variabel numerilk, binning berfungsi untuk mendiskritkan data numerik menjadi kategorik
+train.bin <- optbin(trainingdat)
+
+#membangun model
+model.OneR <- OneR(Buy_Computer~., data = train.bin, verbose = TRUE)
+summary(model.OneR)
+plot(model.OneR)
+
+#prediksi
+pc <-NULL
+pc <- predict(model.OneR, testingdat, type = "class")
+eval_model(pc,testingdat)
+
+```
+

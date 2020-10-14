@@ -1,0 +1,67 @@
+---
+title: "Suport vektor micin"
+author: "Tim Modul"
+date: "10/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load library (install dahulu jika belum diinstall)
+
+library(tidyverse)# untuk plotting dan mengolah variabel
+library(e1071)#untuk pemodelan SMV
+
+#load data
+data("iris")
+str(iris)
+
+
+qplot(Petal.Length, Petal.Width, color = Species, data=iris)# scatterplot untuk  melihat hubungan panjang, lebar dan warna dari data iris.
+
+#model SVM
+
+modelSVM<-svm(Species~., data=iris)
+summary(modelSVM)
+# Support vector kernel default adalah bertipe radial, 
+#terdapat beberapa pilihan yaitu sigmoid, polynomial, linear
+
+
+plot(modelSVM, data=iris,
+     Petal.Width~Petal.Length,#karena terdapat lebih dari 3 variabel pada dataset ini, perlu didefinisikan variabel mana yang akan ditampilkan, pada kasus ini petal width dan length.
+     slice= list(Sepal.Width = 3,
+                 Sepal.Length = 4))
+
+pred<-predict(modelSVM, iris)
+
+confusionMatrix(table(Predicted = pred, Actual=iris$Species))
+
+```
+```{r}
+#mencari model terbaik
+set.seed(123)
+
+ngulikngulik<- tune(svm, Species~., data=iris,
+      ranges = list(epsilon = seq(0,1,0.1),
+                    cost = 2^(2:9)))
+
+#perhatikan nilai cost, jika cost yang ditentukan bernilai besar, bisa terjadi over-fitting, jika terlalu kecil bisa terjadi under-fitting yang berakibat rendahnya akurasi.
+
+plot(ngulikngulik)
+summary(ngulikngulik)
+
+#didapat model terbaik adalah model dengan epsilon 0 dan cost 4
+
+bestmodel<-ngulikngulik$best.model
+summary(bestmodel)
+
+
+pred<-predict(bestmodel, iris)
+
+confusionMatrix(table(Predicted = pred, Actual=iris$Species))
+
+```
+

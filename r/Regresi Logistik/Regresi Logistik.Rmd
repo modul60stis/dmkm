@@ -1,0 +1,66 @@
+---
+title: "Regresi Logistik"
+author: "Tim Modul"
+date: "10/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load library (install dahulu jika belum diinstall)
+
+library(psych)#melihat korelasi antar variabel
+library(caret)# membangun confusion matriks, melihat akurasi model
+
+# load data, path menyesuaikan
+ipeh<- read.csv("../dataset/data_Ipeh.csv", header=T)
+View(ipeh)
+
+```
+
+```{r}
+# melihat struktur data
+str(ipeh)
+
+#mengubah variabel admit dn rank menjadi bertipe factor
+ipeh$admit=as.factor(ipeh$admit)
+ipeh$rank=as.factor(ipeh$rank)
+
+pairs.panels(ipeh)
+#terlihat korelasi antara variabel tidak terlalu signifikan, kita misalkan tidak ada multikolinear. pada kasus asli harap diuji dengan uji multikolinearitas
+```
+
+```{r}
+# memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
+set.seed(1234)
+sampel<-sample(2,nrow(ipeh),replace = T, prob = c(0.8,0.2))
+
+trainingdat<-ipeh[sampel==1, ]
+testingdat<-ipeh[sampel==2, ]
+
+
+#model
+modellogreg<-glm(admit~., data=trainingdat, family = "binomial")
+#karena kasus ini hanya admit atau tidak admit, maka model yang dibangun adalah model regresi logistik sederhana.
+#jika target class memiliki banyak nilai, gunakan multinomial
+summary(modellogreg)
+
+#koefisien model
+coefficients(modellogreg)
+```
+```{r}
+#prediksi
+
+prediksilogreg<-predict(modellogreg, testingdat, type="response")#output berupa peluang
+prediksilogreg
+
+pred<-ifelse(prediksilogreg>0.5, 1, 0)#menyaring prediksi. lebih besar dari 0.05 dikategorikan 1 (admit)
+#selain itu dikategorikan 0 (tidak diadmit)
+
+confusionMatrix(table(pred, testingdat$admit))
+
+```
+

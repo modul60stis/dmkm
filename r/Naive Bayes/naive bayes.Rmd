@@ -1,0 +1,65 @@
+---
+title: "naive bayes"
+author: "Tim Modul"
+date: "10/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#load library (install dahulu jika belum diinstall)
+
+library(naivebayes)#untuk mbikin modeul
+library(psych)# melihat korelasi antar variabel
+library(caret)# membangun confusion matriks, melihat akurasi model
+
+# load data, path menyesuaikan
+car <- read.csv("../dataset/car.txt", header=FALSE)
+
+#deskripsi data car bisa diliat di file car_info_var, V7 merupakan target class yaitu car acceptance
+```
+
+
+
+```{r}
+str(car)
+
+# ubah tipe variabel menjadi tipe faktor
+for(i in names(car)){
+  car[,i]=as.factor(car[,i])
+}
+
+str(car)
+view(car)
+# melihat korelasi dari tiap variabel, kalau ada korelasi yang tinggi, hilangkan salah satu variabel
+pairs.panels(car)
+
+```
+
+
+```{r}
+# memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
+set.seed(1234)
+sampel<-sample(2,nrow(car),replace = T, prob = c(0.8,0.2))
+
+trainingdat<-car[sampel==1, ]
+testingdat<-car[sampel==2, ]
+
+# membuat model
+modelnaiv<-naive_bayes(V7~.,data=trainingdat)
+# gunakan atribut laplace untuk menghilangkan zero probability problem
+modelnaiv
+summary(modelnaiv)
+```
+```{r}
+# prediksi menggunakan data testing
+
+prediksi<-predict(modelnaiv, testingdat)
+confusionMatrix(table(prediksi,testingdat$V7))
+
+```
+

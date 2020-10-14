@@ -1,0 +1,72 @@
+---
+title: "Zero R"
+author: "Tim Modul"
+date: "10/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#load library (install dahulu jika belum diinstall)
+library(tidyverse)#untuk pengolahan variabel dan data
+
+#load data
+data<-read.csv("../dataset/beli_komputer.csv", header = T, sep = ";")
+
+```
+
+```{r}
+# melihat struktur data
+str(data)
+
+#melihat apa terdapat data yang miss
+colSums(is.na(data))
+
+#mengubah tipe variabel menjadi factor
+
+for(i in names(data[-1])){
+  data[ ,i]=as.factor(data[ ,i])
+}
+str(data)
+summary(data)
+```
+
+```{r}
+# memecah data menjadi data training(80% dari data awal) dan data test (20% dari data awal)
+set.seed(1234)
+sampel<-sample(2,nrow(data),replace = T, prob = c(0.8,0.2))
+
+trainingdat<-data[sampel==1, ]
+testingdat<-data[sampel==2, ]
+
+#hanya mengambil target class saja
+trainingdat<-trainingdat[6]
+testingdat<-testingdat[6]
+
+
+summary(trainingdat)
+```
+```{r}
+#banyak yes dan no pada target class
+
+banyakyes<-trainingdat %>% filter(Buy_Computer=="yes") %>% summarise(banyak=n())
+banyakno<-trainingdat %>% filter(Buy_Computer=="no") %>% summarise(banyak=n())
+
+trainingdat %>% ggplot(aes(x=Buy_Computer)) + geom_bar()
+
+#peluang
+probyes<-banyakyes/count(trainingdat)
+probno<-banyakno/count(trainingdat)
+
+probyes
+probno
+
+#karena peluang yes lebih besar dari no maka buy_computer=yes adalah model ZeroR dengan akurasi=probyes
+
+
+```
+
