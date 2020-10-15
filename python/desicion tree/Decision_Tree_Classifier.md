@@ -2,6 +2,9 @@
 
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://GitHub.com/Naereen/) 
 
+
+
+
 ### Import library required
 Library yang digunakan adalah **pandas, numpy, matplotlib, seaborn, dan sklearn**. Silahkan install terlebih dahulu jika belum menginstallnya dengan perintah `pip install nama-library`.
 
@@ -31,6 +34,9 @@ X, y = data.data, data.target
 
 data.frame
 ```
+
+
+
 
 <div>
 <table border="1" class="dataframe">
@@ -146,10 +152,10 @@ Fungsi `train_test_split`, secara default akan membagi data menjadi 75% data tra
 
 ```python
 X_train, X_test, y_train, y_test = train_test_split(X,y, random_state=0, train_size=0.8)
-print("Jumlah Training Data : ", X_train.size, " | Jumlah Test Data : ", y_train.size)
+print("Jumlah Training Data : ", len(X_train), " | Jumlah Test Data : ", len(X_test))
 ```
 
-    Jumlah Training Data :  480  | Jumlah Test Data :  120
+    Jumlah Training Data :  120  | Jumlah Test Data :  30
     
 
 ### Make Model
@@ -185,7 +191,7 @@ clf_entropy.get_params()
 
 
 ```python
-plt.figure()
+plt.figure(figsize=(15,10))
 plot_tree(clf_entropy, filled=True, feature_names=data.feature_names,  
                      class_names=data.target_names, rounded=True);
 ```
@@ -246,13 +252,10 @@ plt.title('Accuracy : {:.3}'.format(accuracy))
 ```
 
 
-
-
 ![png](figure/output_16_1.png)
 
 
 ### Make Prediction
-
 Misalnya kita memiliki bunga dengan sepal_length = 0.4, sepal_width = 1, petal_length = 2.3, dan petal_width = 2.5
 
 
@@ -262,8 +265,6 @@ data.target_names[predict][0]
 ```
 
 
-
-
-    'setosa'
+    'virginica'
 
 
