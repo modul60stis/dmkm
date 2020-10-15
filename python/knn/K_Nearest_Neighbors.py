@@ -6,10 +6,10 @@
 # ### Import library required
 # Librari yang digunakan adalah **pandas, numpy, matplotlib, seaborn, dan sklearn**. Silahkan install terlebih dahulu jika belum menginstallnya dengan perintah `pip install nama-library`.
 
-# In[1]:
+# In[11]:
 
 
-get_ipython().run_line_magic('matplotlib', 'notebook')
+get_ipython().run_line_magic('matplotlib', 'inline')
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,31 +21,32 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import roc_curve, auc
 
 
 # ### Load Data
 # Data yang digunakan adalah data bawaan sklearn library. Jika ingin menggunakan data sendiri silahkan pakai perintah `pd.read_csv()` atau `pd.read_excel()`
 
-# In[14]:
+# In[2]:
 
 
 data = load_wine(as_frame=True)
-data.data.assign(target=data.target_names[data.target]).head(15)
+data.frame
 
 
 # ### Split Data
 # Fungsi `train_test_split`, secara default akan membagi data menjadi 75% data training dan 25% data test. Untuk mengaturnya dapat menggunakan argument `test_size` atau `train_size`. Contoh `train_test_split(X, y, train_test = 0.8)`
 
-# In[18]:
+# In[3]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, random_state=0)
-print("Jumlah Training Data : ", X_train.size, " | Jumlah Test Data : ", y_train.size)
+print("Jumlah Training Data : ", len(X_train), " | Jumlah Test Data : ", len(X_test))
 
 
 # ### Scale Features to Minimize Computation
 
-# In[19]:
+# In[6]:
 
 
 sc_X = StandardScaler()
@@ -55,7 +56,7 @@ X_test = sc_X.fit_transform(X_test)
 
 # ### Make Model
 
-# In[21]:
+# In[7]:
 
 
 clf = KNeighborsClassifier(n_neighbors=11, p=2, metric='euclidean')
@@ -65,7 +66,7 @@ clf.get_params()
 
 # ### Predict Test Set with that Model
 
-# In[22]:
+# In[8]:
 
 
 y_pred = clf.predict(X_test)
@@ -74,7 +75,7 @@ y_pred
 
 # ### Check Accuracy
 
-# In[25]:
+# In[9]:
 
 
 print('Accuracy: ', clf.score(X_test, y_test))
@@ -82,7 +83,7 @@ print('Accuracy: ', clf.score(X_test, y_test))
 
 # ### Make Confusion Matrix
 
-# In[26]:
+# In[12]:
 
 
 cm = confusion_matrix(y_test, y_pred)
@@ -95,7 +96,7 @@ plt.xlabel('True Label')
 plt.ylabel('Predicted Label');
 
 
-# In[27]:
+# In[13]:
 
 
 from sklearn.metrics import plot_confusion_matrix

@@ -2,12 +2,13 @@
 
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://GitHub.com/Naereen/) 
 
+
 ### Import library required
-LibrarY yang digunakan adalah **pandas, numpy, matplotlib, seaborn, dan sklearn**. Silahkan install terlebih dahulu jika belum menginstallnya dengan perintah `pip install nama-library`.
+Librari yang digunakan adalah **pandas, numpy, matplotlib, seaborn, dan sklearn**. Silahkan install terlebih dahulu jika belum menginstallnya dengan perintah `pip install nama-library`.
 
 
 ```python
-%matplotlib notebook
+%matplotlib inline
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,6 +20,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import roc_curve, auc
 ```
 
 ### Load Data
@@ -27,7 +29,7 @@ Data yang digunakan adalah data bawaan sklearn library. Jika ingin menggunakan d
 
 ```python
 data = load_wine(as_frame=True)
-data.data.assign(target=data.target_names[data.target]).head(15)
+data.frame
 ```
 
 
@@ -70,7 +72,7 @@ data.data.assign(target=data.target_names[data.target]).head(15)
       <td>1.04</td>
       <td>3.92</td>
       <td>1065.0</td>
-      <td>class_0</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>1</th>
@@ -87,7 +89,7 @@ data.data.assign(target=data.target_names[data.target]).head(15)
       <td>1.05</td>
       <td>3.40</td>
       <td>1050.0</td>
-      <td>class_0</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>2</th>
@@ -104,7 +106,7 @@ data.data.assign(target=data.target_names[data.target]).head(15)
       <td>1.03</td>
       <td>3.17</td>
       <td>1185.0</td>
-      <td>class_0</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>3</th>
@@ -121,7 +123,7 @@ data.data.assign(target=data.target_names[data.target]).head(15)
       <td>0.86</td>
       <td>3.45</td>
       <td>1480.0</td>
-      <td>class_0</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>4</th>
@@ -138,180 +140,113 @@ data.data.assign(target=data.target_names[data.target]).head(15)
       <td>1.04</td>
       <td>2.93</td>
       <td>735.0</td>
-      <td>class_0</td>
+      <td>0</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>14.20</td>
-      <td>1.76</td>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>173</th>
+      <td>13.71</td>
+      <td>5.65</td>
       <td>2.45</td>
-      <td>15.2</td>
-      <td>112.0</td>
-      <td>3.27</td>
-      <td>3.39</td>
-      <td>0.34</td>
-      <td>1.97</td>
-      <td>6.75</td>
-      <td>1.05</td>
-      <td>2.85</td>
-      <td>1450.0</td>
-      <td>class_0</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>14.39</td>
-      <td>1.87</td>
-      <td>2.45</td>
-      <td>14.6</td>
-      <td>96.0</td>
-      <td>2.50</td>
-      <td>2.52</td>
-      <td>0.30</td>
-      <td>1.98</td>
-      <td>5.25</td>
-      <td>1.02</td>
-      <td>3.58</td>
-      <td>1290.0</td>
-      <td>class_0</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>14.06</td>
-      <td>2.15</td>
-      <td>2.61</td>
-      <td>17.6</td>
-      <td>121.0</td>
-      <td>2.60</td>
-      <td>2.51</td>
-      <td>0.31</td>
-      <td>1.25</td>
-      <td>5.05</td>
-      <td>1.06</td>
-      <td>3.58</td>
-      <td>1295.0</td>
-      <td>class_0</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>14.83</td>
-      <td>1.64</td>
-      <td>2.17</td>
-      <td>14.0</td>
-      <td>97.0</td>
-      <td>2.80</td>
-      <td>2.98</td>
-      <td>0.29</td>
-      <td>1.98</td>
-      <td>5.20</td>
-      <td>1.08</td>
-      <td>2.85</td>
-      <td>1045.0</td>
-      <td>class_0</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>13.86</td>
-      <td>1.35</td>
-      <td>2.27</td>
-      <td>16.0</td>
-      <td>98.0</td>
-      <td>2.98</td>
-      <td>3.15</td>
-      <td>0.22</td>
-      <td>1.85</td>
-      <td>7.22</td>
-      <td>1.01</td>
-      <td>3.55</td>
-      <td>1045.0</td>
-      <td>class_0</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>14.10</td>
-      <td>2.16</td>
-      <td>2.30</td>
-      <td>18.0</td>
-      <td>105.0</td>
-      <td>2.95</td>
-      <td>3.32</td>
-      <td>0.22</td>
-      <td>2.38</td>
-      <td>5.75</td>
-      <td>1.25</td>
-      <td>3.17</td>
-      <td>1510.0</td>
-      <td>class_0</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>14.12</td>
-      <td>1.48</td>
-      <td>2.32</td>
-      <td>16.8</td>
+      <td>20.5</td>
       <td>95.0</td>
-      <td>2.20</td>
-      <td>2.43</td>
-      <td>0.26</td>
-      <td>1.57</td>
-      <td>5.00</td>
-      <td>1.17</td>
-      <td>2.82</td>
-      <td>1280.0</td>
-      <td>class_0</td>
+      <td>1.68</td>
+      <td>0.61</td>
+      <td>0.52</td>
+      <td>1.06</td>
+      <td>7.70</td>
+      <td>0.64</td>
+      <td>1.74</td>
+      <td>740.0</td>
+      <td>2</td>
     </tr>
     <tr>
-      <th>12</th>
-      <td>13.75</td>
-      <td>1.73</td>
-      <td>2.41</td>
-      <td>16.0</td>
-      <td>89.0</td>
-      <td>2.60</td>
-      <td>2.76</td>
-      <td>0.29</td>
-      <td>1.81</td>
-      <td>5.60</td>
-      <td>1.15</td>
-      <td>2.90</td>
-      <td>1320.0</td>
-      <td>class_0</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>14.75</td>
-      <td>1.73</td>
-      <td>2.39</td>
-      <td>11.4</td>
-      <td>91.0</td>
-      <td>3.10</td>
-      <td>3.69</td>
-      <td>0.43</td>
-      <td>2.81</td>
-      <td>5.40</td>
-      <td>1.25</td>
-      <td>2.73</td>
-      <td>1150.0</td>
-      <td>class_0</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>14.38</td>
-      <td>1.87</td>
-      <td>2.38</td>
-      <td>12.0</td>
+      <th>174</th>
+      <td>13.40</td>
+      <td>3.91</td>
+      <td>2.48</td>
+      <td>23.0</td>
       <td>102.0</td>
-      <td>3.30</td>
-      <td>3.64</td>
-      <td>0.29</td>
-      <td>2.96</td>
-      <td>7.50</td>
-      <td>1.20</td>
-      <td>3.00</td>
-      <td>1547.0</td>
-      <td>class_0</td>
+      <td>1.80</td>
+      <td>0.75</td>
+      <td>0.43</td>
+      <td>1.41</td>
+      <td>7.30</td>
+      <td>0.70</td>
+      <td>1.56</td>
+      <td>750.0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>175</th>
+      <td>13.27</td>
+      <td>4.28</td>
+      <td>2.26</td>
+      <td>20.0</td>
+      <td>120.0</td>
+      <td>1.59</td>
+      <td>0.69</td>
+      <td>0.43</td>
+      <td>1.35</td>
+      <td>10.20</td>
+      <td>0.59</td>
+      <td>1.56</td>
+      <td>835.0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>176</th>
+      <td>13.17</td>
+      <td>2.59</td>
+      <td>2.37</td>
+      <td>20.0</td>
+      <td>120.0</td>
+      <td>1.65</td>
+      <td>0.68</td>
+      <td>0.53</td>
+      <td>1.46</td>
+      <td>9.30</td>
+      <td>0.60</td>
+      <td>1.62</td>
+      <td>840.0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>177</th>
+      <td>14.13</td>
+      <td>4.10</td>
+      <td>2.74</td>
+      <td>24.5</td>
+      <td>96.0</td>
+      <td>2.05</td>
+      <td>0.76</td>
+      <td>0.56</td>
+      <td>1.35</td>
+      <td>9.20</td>
+      <td>0.61</td>
+      <td>1.60</td>
+      <td>560.0</td>
+      <td>2</td>
     </tr>
   </tbody>
 </table>
+<p>178 rows × 14 columns</p>
 </div>
 
 
@@ -322,10 +257,10 @@ Fungsi `train_test_split`, secara default akan membagi data menjadi 75% data tra
 
 ```python
 X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, random_state=0)
-print("Jumlah Training Data : ", X_train.size, " | Jumlah Test Data : ", y_train.size)
+print("Jumlah Training Data : ", len(X_train), " | Jumlah Test Data : ", len(X_test))
 ```
 
-    Jumlah Training Data :  1729  | Jumlah Test Data :  133
+    Jumlah Training Data :  133  | Jumlah Test Data :  45
     
 
 ### Scale Features to Minimize Computation
@@ -400,11 +335,17 @@ sns.heatmap(cm.T, annot=True, square=True, xticklabels=data.target_names, fmt='d
 plt.xlabel('True Label')
 plt.ylabel('Predicted Label');
 ```
-![](figure/plot1.png)
+
+
+![png](figure/output_16_0.png)
+
 
 
 ```python
 from sklearn.metrics import plot_confusion_matrix
 plot_confusion_matrix(clf, X_test, y_test, display_labels=data.target_names, cmap='Blues');
 ```
-![](figure/plot2.png)
+
+
+![png](figure/output_17_0.png)
+
