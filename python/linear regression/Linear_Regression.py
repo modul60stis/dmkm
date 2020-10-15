@@ -36,16 +36,15 @@ data.frame
 # ### Explore Data
 # #### Make Pair Plot
 
-# In[3]:
+# In[4]:
 
 
-plt.figure()
 sns.pairplot(data.frame);
 
 
 # ### Correlation Plot
 
-# In[4]:
+# In[7]:
 
 
 plt.figure(figsize=(6,6))
@@ -54,7 +53,7 @@ sns.heatmap(data.frame.corr(), annot=True, fmt='.2f', square=True, linewidth=.5,
 
 # ### Make Dummy Variabel for Catagorical Data
 
-# In[10]:
+# In[9]:
 
 
 X = data.data
@@ -62,32 +61,22 @@ y = data.target
 
 categorical_column = ['sex']
 X = pd.get_dummies(X, columns=categorical_column)
-X.head(10)
-
-
-# ### Split Data
-# Fungsi `train_test_split`, secara default akan membagi data menjadi 75% data training dan 25% data test. Untuk mengaturnya dapat menggunakan argument `test_size` atau `train_size`. Contoh `train_test_split(X, y, train_test = 0.8)`
-
-# In[6]:
-
-
-X_train, X_test, y_train, y_test = train_test_split(X,y, random_state=0)
-print("Jumlah Training Data : ", X_train.size, " | Jumlah Test Data : ", y_train.size)
+X
 
 
 # ### Make Model
 
-# In[7]:
+# In[10]:
 
 
 model = LinearRegression()
-model.fit(X_train, y_train)
+model.fit(X, y)
 model.get_params()
 
 
 # ### List of Coefficients
 
-# In[8]:
+# In[11]:
 
 
 lst = [['Intercept', round(model.intercept_, 3)]]
@@ -101,8 +90,8 @@ pd.DataFrame(lst, columns=['Feature', 'Estimated coefficients'])
 # In[12]:
 
 
-y_pred = model.predict(X_test)
-print('R2 Score: {}'.format(r2_score(y_test, y_pred)))
+y_pred = model.predict(X)
+print('R2 Score: {}'.format(r2_score(y, y_pred)))
 
 
 # ### Error
@@ -110,7 +99,7 @@ print('R2 Score: {}'.format(r2_score(y_test, y_pred)))
 # In[13]:
 
 
-pd.DataFrame({'True' : y_test, 
+pd.DataFrame({'True' : y, 
               'Prediction': np.round(y_pred, 3),
-              'Error^2' : np.round(np.square(y_pred - y_test), 3)}).reset_index(drop=True).head(10)
+              'Error^2' : np.round(np.square(y_pred - y), 3)}).reset_index(drop=True)
 
