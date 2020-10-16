@@ -348,6 +348,8 @@ def train_on_value(X, y_true, feature_index):
 
 ```
 
+### Split Data
+Fungsi `train_test_split`, secara default akan membagi data menjadi 75% data training dan 25% data test. Untuk mengaturnya dapat menggunakan argument `test_size` atau `train_size`. Contoh `train_test_split(X, y, train_test = 0.8)`
 
 ```python
 Xd_train, Xd_test, y_train, y_test = train_test_split(X_d, y, random_state=14)
