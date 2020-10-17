@@ -28,7 +28,7 @@ plt.scatter(X[:,0], X[:, 1], s=30);
 ```
 
 
-![png](output_4_0.png)
+![png](figure/output_4_0.png)
 
 
 ### Make Function
