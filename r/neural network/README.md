@@ -1,3 +1,7 @@
+# Neural Network <img src="https://img.shields.io/badge/r-%23276DC3.svg?&style=for-the-badge&logo=r&logoColor=white"/> 
+
+[![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://GitHub.com/Naereen/) 
+
 ### Load Library
 
 Tiga library yang dibutuhkan, yaitu **neuralnet dan caret**. Jika belum
