@@ -35,6 +35,7 @@ Jika kalian ingin **berkontribusi** silahkan forking repository ini dan lakukan 
 10. [Regresi Logistik](https://github.com/modul60stis/dmkm/tree/main/r/Regresi%20Logistik#regresi-logistic-)
 11. [Support Vector Mechine](https://github.com/modul60stis/dmkm/tree/main/r/SVM#support-vector-mechine-svm-)
 12. [ZeroR](https://github.com/modul60stis/dmkm/tree/main/r/ZeroR#zeror-)
+13. [Neural Network](https://github.com/modul60stis/dmkm/tree/main/r/neural%20network#neural-network-)
 
 ## Python Code
 1. [Decision Tree](https://github.com/modul60stis/dmkm/tree/main/python/desicion%20tree#decision-tree-classifier-)
