@@ -255,6 +255,25 @@ plt.title('Accuracy : {:.3}'.format(accuracy))
 ![png](figure/output_16_1.png)
 
 
+### Classsification Report
+
+
+```python
+from sklearn.metrics import classification_report
+print(classification_report(y_test, y_pred, target_names = data.target_names))
+```
+
+                  precision    recall  f1-score   support
+    
+          setosa       1.00      1.00      1.00        11
+      versicolor       1.00      1.00      1.00        13
+       virginica       1.00      1.00      1.00         6
+    
+        accuracy                           1.00        30
+       macro avg       1.00      1.00      1.00        30
+    weighted avg       1.00      1.00      1.00        30
+
+
 ### Make Prediction
 Misalnya kita memiliki bunga dengan sepal_length = 0.4, sepal_width = 1, petal_length = 2.3, dan petal_width = 2.5
 
